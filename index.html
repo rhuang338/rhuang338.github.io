@@ -1,10 +1,34 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>On the Hornize</title>
-</head>
-<body>
-    <h1>Senior school On the Hornize T4 W3</h1>
-    <p></p>
-</body>
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>On the Horizon</title> 
+    <style> 
+        /* Remove default browser margins and borders */ 
+        html, body { 
+            margin: 0; 
+            padding: 0; 
+            height: 100%; 
+            width: 100%; 
+            overflow: hidden; /* Prevents double scrollbars */ 
+        } 
+        /* Make the PDF viewer fill the entire screen */ 
+        iframe { 
+            border: none; 
+            width: 100%; 
+            height: 100%; 
+        } 
+    </style> 
+</head> 
+<body> 
+    
+    <!-- Displays the PDF inside a full-screen frame --> 
+    <iframe src="document.pdf"> 
+        <p>Your browser does not support iframes. 
+            <a href="document.pdf">Click here to download the PDF instead.</a> 
+        </p> 
+    </iframe> 
+
+</body> 
 </html>
