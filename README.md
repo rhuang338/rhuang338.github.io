@@ -2,6 +2,7 @@
 Display school notice
 
 Primary Risks
+
 Accidental Exposure of Secrets (API Keys & Passwords): Automated web bots continuously scan public GitHub repositories for hardcoded API keys, database passwords, tokens, and credentials. Committing these secrets publicly can lead to compromised cloud services or financial loss.
 
 Git Commit History Retention: Simply removing a sensitive file or key in a new commit does not delete it from GitHub. Anyone can browse your commit history or access raw git objects to view previous versions of your code.
@@ -15,6 +16,7 @@ Email Scraping and Spam: Hardcoding your personal email address into markdown or
 Resource and Bandwidth Limits: GitHub Pages enforces soft usage limits (1 GB repository size limit, 100 GB monthly bandwidth limit, and 10 builds per hour). Severe overuse can lead to site throttling or account warnings.
 
 Best Practices to Stay Safe
+
 Keep Secrets Out of Code: Never commit credentials. For dynamic features like contact forms, use third-party serverless services (e.g., Formspree, Formkeep, or Netlify Forms) rather than custom backend tokens.
 
 Use .gitignore Appropriately: Add build artifacts, temporary scratchpads, local environment files (.env), and personal document folders to your .gitignore file before making your initial commit.
