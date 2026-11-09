@@ -1,0 +1,105 @@
+Browser JavaScript (`script.js`) cannot directly upload files to your GitHub repository or create a direct link to a folder on your computer because GitHub Pages is a static host and web browsers block scripts from writing to local or remote file systems for security.
+
+Here are the three best ways to accomplish what you need:
+
+---
+
+### Method 1: Use GitHub Desktop to sync a local folder (Easiest)
+
+You can link a folder on your computer directly to your GitHub repository using the GitHub Desktop app.
+
+1. Download and install **[GitHub Desktop](https://desktop.github.com/)**.
+2. Clone your `my.github.io` repository to a location on your computer (e.g., `C:\Projects\my.github.io`).
+3. Whenever you copy new photos into your local `images` folder (`C:\Projects\my.github.io\images`), open GitHub Desktop.
+4. Click **Commit to main** and then **Push origin**. Your site will automatically update on GitHub Pages.
+
+---
+
+### Method 2: Auto-sync using a background watcher script
+
+If you want new photos added to your computer's local folder to upload automatically without opening GitHub Desktop every time, you can run a simple terminal command that watches for changes and pushes them automatically.
+
+#### On Windows (PowerShell script):
+
+Save this file as `autosync.ps1` in your repository folder:
+
+```powershell
+while ($true) {
+    git add images/*
+    git commit -m "Auto-update images"
+    git push origin main
+    Start-Sleep -Seconds 30
+}
+
+```
+
+Run `.\autosync.ps1` in PowerShell. Every 30 seconds, any new photo dropped into your local `images/` folder will automatically be uploaded to GitHub.
+
+#### On Mac/Linux (Terminal script):
+
+Run this loop in your terminal from inside your repository folder:
+
+```bash
+while true; do
+  git add images/
+  git commit -m "Auto-update images"
+  git push origin main
+  sleep 30
+done
+
+```
+
+---
+
+### Method 3: Add a local file picker directly to the webpage
+
+If you want the slideshow to play photos directly from your local computer without uploading them to GitHub first, you can add an HTML `<input>` file button. JavaScript will read your local files instantly in the browser.
+
+#### Updated `index.html` snippet:
+
+```html
+<div class="slideshow-container">
+  <!-- Local photo selection input -->
+  <input type="file" id="file-input" multiple accept="image/*" style="position: absolute; top: 10px; left: 10px; z-index: 20;">
+  
+  <img id="slideshow-img" src="" alt="Select photos to play">
+  <button class="nav-btn prev" onclick="changeSlide(-1)">&#10094;</button>
+  <button class="nav-btn next" onclick="changeSlide(1)">&#10095;</button>
+  <div class="counter" id="slide-counter">0 / 0</div>
+</div>
+
+```
+
+#### Updated `script.js` snippet:
+
+```javascript
+let photos = [];
+let currentIndex = 0;
+
+const imgElement = document.getElementById("slideshow-img");
+const counterElement = document.getElementById("slide-counter");
+const fileInput = document.getElementById("file-input");
+
+fileInput.addEventListener("change", (event) => {
+  const files = Array.from(event.target.files);
+  if (files.length === 0) return;
+
+  // Convert local file objects to browser memory URLs
+  photos = files.map(file => URL.createObjectURL(file));
+  currentIndex = 0;
+  updateSlide();
+});
+
+function updateSlide() {
+  if (photos.length === 0) return;
+  imgElement.src = photos[currentIndex];
+  counterElement.textContent = `${currentIndex + 1} / ${photos.length}`;
+}
+
+function changeSlide(direction) {
+  if (photos.length === 0) return;
+  currentIndex = (currentIndex + direction + photos.length) % photos.length;
+  updateSlide();
+}
+
+```
