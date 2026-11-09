@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-950 text-slate-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>50 Photo Showcase & Slideshow Studio</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    animation: {
+                        'kenburns': 'kenburns 12s ease infinite alternate',
+                    },
+                    keyframes: {
+                        kenburns: {
+                            '0%': { transform: 'scale(1) translate(0, 0)' },
+                            '100%': { transform: 'scale(1.15) translate(-1%, -1%)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbars */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(51, 65, 85, 0.8);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(71, 85, 105, 1);
+        }
+        
+        /* Smooth fade transitions */
+        .slide-fade-enter { opacity: 0; transform: scale(0.98); }
+        .slide-fade-enter-active { opacity: 1; transform: scale(1); transition: opacity 0.5s ease, transform 0.5s ease; }
+        .slide-fade-exit { opacity: 1; }
+        .slide-fade-exit-active { opacity: 0; transition: opacity 0.5s ease; }
+
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="h-full flex flex-col font-sans overflow-x-hidden antialiased select-none selection:bg-indigo-500 selection:text-white">
+
+    <!-- Header Navigation -->
+    <header class="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-40 px-4 py-3 sm:px-6">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="bg-gradient-to-tr from-indigo-500 to-purple-500 p-2 rounded-xl text-white shadow-lg shadow-indigo-500/20">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg text-white leading-tight">50 Photo Gallery & Video Studio</h1>
+                    <p class="text-xs text-slate-400">Interactive Web Slideshow & Performance Guide</p>
+                </div>
+            </div>
+
+            <!-- Main Mode Tabs -->
+            <nav class="flex bg-slate-950/80 p-1 rounded-xl border border-slate-800/80 text-sm font-medium">
+                <button id="tab-slideshow" onclick="switchView('slideshow')" class="px-4 py-1.5 rounded-lg transition-all text-white bg-indigo-600 shadow-md flex items-center space-x-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <span>Slideshow</span>
+                </button>
+                <button id="tab-video" onclick="switchView('video')" class="px-4 py-1.5 rounded-lg transition-all text-slate-400 hover:text-white flex items-center space-x-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                    <span>Video Scrubbing</span>
+                </button>
+                <button id="tab-grid" onclick="switchView('grid')" class="px-4 py-1.5 rounded-lg transition-all text-slate-400 hover:text-white flex items-center space-x-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                    <span>50-Grid</span>
+                </button>
+                <button id="tab-code" onclick="switchView('code')" class="px-4 py-1.5 rounded-lg transition-all text-slate-400 hover:text-white flex items-center space-x-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+                    <span>How-To Guide</span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-1 flex flex-col max-w-7xl w-full mx-auto p-4 sm:p-6 overflow-hidden">
+
+        <!-- ================= VIEW 1: INTERACTIVE SLIDESHOW ================= -->
+        <section id="view-slideshow" class="flex-1 flex flex-col space-y-4">
+            <!-- Main Stage Player Container -->
+            <div id="player-container" class="relative group flex-1 bg-slate-900 rounded-2xl border border-slate-800 shadow-2xl overflow-hidden min-h-[380px] sm:min-h-[480px] flex items-center justify-center">
+                
+                <!-- Slide Background Blur Effect -->
+                <div id="bg-blur" class="absolute inset-0 bg-cover bg-center filter blur-2xl opacity-20 scale-110 transition-all duration-700"></div>
+
+                <!-- Main Display Photo -->
+                <div class="relative w-full h-full flex items-center justify-center overflow-hidden">
+                    <img id="main-slide-img" src="" alt="Slide Photo" class="max-w-full max-h-[65vh] sm:max-h-[70vh] object-contain z-10 transition-all duration-500 rounded-lg shadow-2xl">
+                    <div id="kenburns-wrapper" class="absolute inset-0 z-0 hidden">
+                        <img id="kenburns-img" src="" alt="Kenburns layer" class="w-full h-full object-cover animate-kenburns opacity-60">
+                    </div>
+                </div>
+
+                <!-- Top Info Overlay Badge -->
+                <div class="absolute top-4 left-4 z-20 flex items-center space-x-2 bg-slate-950/70 backdrop-blur-md px-3 py-1.5 rounded-full border border-slate-700/50 text-xs font-medium text-slate-200">
+                    <span id="slide-counter-badge" class="bg-indigo-500 text-white font-semibold px-2 py-0.5 rounded-full">1 / 50</span>
+                    <span id="slide-category-badge" class="text-slate-300">Nature</span>
+                </div>
+
+                <!-- Title & Caption Overlay (Bottom Left) -->
+                <div class="absolute bottom-4 left-4 right-16 sm:right-auto sm:max-w-md z-20 bg-slate-950/80 backdrop-blur-md p-3.5 rounded-xl border border-slate-800/80 shadow-lg transition-opacity duration-300">
+                    <h3 id="slide-title" class="font-bold text-white text-base sm:text-lg leading-tight">Loading photo...</h3>
+                    <p id="slide-desc" class="text-xs text-slate-300 mt-1 line-clamp-2">Please wait while photos are initialized.</p>
+                </div>
+
+                <!-- Navigation Arrows -->
+                <button onclick="prevSlide()" class="absolute left-3 top-1/2 -translate-y-1/2 z-30 bg-slate-900/80 hover:bg-indigo-600 text-white p-3 rounded-full border border-slate-700 hover:border-indigo-500 transition-all transform hover:scale-110 focus:outline-none backdrop-blur-md shadow-xl" aria-label="Previous Slide">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
+                </button>
+
+                <button onclick="nextSlide()" class="absolute right-3 top-1/2 -translate-y-1/2 z-30 bg-slate-900/80 hover:bg-indigo-600 text-white p-3 rounded-full border border-slate-700 hover:border-indigo-500 transition-all transform hover:scale-110 focus:outline-none backdrop-blur-md shadow-xl" aria-label="Next Slide">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
+                </button>
+
+                <!-- Fullscreen Toggle -->
+                <button onclick="toggleFullscreen()" class="absolute top-4 right-4 z-30 bg-slate-900/80 hover:bg-slate-800 text-slate-300 hover:text-white p-2.5 rounded-xl border border-slate-700 transition-all" title="Toggle Fullscreen">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
+                </button>
+
+                <!-- Audio Ambient Sound Toggle -->
+                <button id="sound-btn" onclick="toggleAudio()" class="absolute top-4 right-16 z-30 bg-slate-900/80 hover:bg-slate-800 text-slate-300 hover:text-white p-2.5 rounded-xl border border-slate-700 transition-all" title="Toggle Ambient Audio Effect">
+                    <svg id="sound-off-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"></path></svg>
+                    <svg id="sound-on-icon" class="w-5 h-5 hidden text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
+                </button>
+
+                <!-- Slide Progress Bar (Top) -->
+                <div class="absolute top-0 left-0 right-0 h-1 bg-slate-800/60 z-30">
+                    <div id="slide-progress-bar" class="h-full bg-gradient-to-r from-indigo-500 to-purple-500 w-0 transition-all duration-100 ease-linear"></div>
+                </div>
+            </div>
+
+            <!-- Slideshow Controls Toolbar -->
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-3 sm:p-4 flex flex-wrap items-center justify-between gap-3 shadow-lg">
+                <!-- Playback Buttons -->
+                <div class="flex items-center space-x-2">
+                    <button id="play-pause-btn" onclick="togglePlay()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-4 py-2 rounded-lg flex items-center space-x-2 shadow-md shadow-indigo-600/30 transition-all">
+                        <svg id="play-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path></svg>
+                        <svg id="pause-icon" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span id="play-btn-text">Autoplay</span>
+                    </button>
+                    <button onclick="stopPlay()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 p-2 rounded-lg border border-slate-700 transition-all" title="Reset to Start">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                    </button>
+                </div>
+
+                <!-- Speed Controller -->
+                <div class="flex items-center space-x-2 text-xs sm:text-sm font-medium text-slate-300">
+                    <span>Speed:</span>
+                    <select id="speed-select" onchange="updateSpeed(this.value)" class="bg-slate-950 border border-slate-700 rounded-lg px-2.5 py-1.5 text-white focus:outline-none focus:border-indigo-500">
+                        <option value="1000">1.0s (Fast)</option>
+                        <option value="2500" selected>2.5s (Default)</option>
+                        <option value="4000">4.0s (Relaxed)</option>
+                        <option value="6000">6.0s (Slow)</option>
+                    </select>
+                </div>
+
+                <!-- Transition FX Dropdown -->
+                <div class="flex items-center space-x-2 text-xs sm:text-sm font-medium text-slate-300">
+                    <span>Effect:</span>
+                    <select id="effect-select" onchange="updateEffect(this.value)" class="bg-slate-950 border border-slate-700 rounded-lg px-2.5 py-1.5 text-white focus:outline-none focus:border-indigo-500">
+                        <option value="fade">Cross Fade</option>
+                        <option value="zoom">Zoom Fade</option>
+                        <option value="kenburns">Ken Burns Effect</option>
+                        <option value="slide">Slide Push</option>
+                    </select>
+                </div>
+
+                <!-- Quick Jump Input -->
+                <div class="flex items-center space-x-2 text-xs sm:text-sm">
+                    <span class="text-slate-400">Go to:</span>
+                    <input type="number" id="jump-input" min="1" max="50" placeholder="#" class="w-14 bg-slate-950 border border-slate-700 text-center rounded-lg py-1 px-1 text-white focus:outline-none focus:border-indigo-500">
+                    <button onclick="jumpToSlide()" class="bg-slate-800 hover:bg-slate-700 text-xs px-2.5 py-1 rounded-lg text-slate-200 border border-slate-700">Go</button>
+                </div>
+            </div>
+
+            <!-- Bottom Horizontal Thumbnails Strip -->
+            <div class="bg-slate-900/60 border border-slate-800/80 rounded-xl p-2 relative">
+                <div id="thumbs-container" class="flex space-x-2 overflow-x-auto py-1 scroll-smooth hide-scrollbar items-center">
+                    <!-- Dynamic Thumbnails Rendered via JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= VIEW 2: CONTINUOUS VIDEO SCRUBBING MODE ================= -->
+        <section id="view-video" class="hidden flex-1 flex flex-col space-y-4">
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-2xl flex flex-col space-y-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                            <span class="w-3 h-3 rounded-full bg-rose-500 animate-pulse"></span>
+                            Continuous 50-Photo Video Simulation
+                        </h2>
+                        <p class="text-xs text-slate-400 mt-0.5">Scrub through all 50 photos smoothly like a video timeline player using HTML canvas & state buffer.</p>
+                    </div>
+                    <div class="text-right">
+                        <span id="video-timer" class="font-mono text-sm font-bold text-indigo-400">00:00 / 00:50</span>
+                        <div class="text-[10px] text-slate-500">FPS: 30 (Interpolated)</div>
+                    </div>
+                </div>
+
+                <!-- Canvas Video Screen -->
+                <div class="relative bg-black rounded-xl overflow-hidden aspect-video max-h-[55vh] flex items-center justify-center border border-slate-800 shadow-inner">
+                    <canvas id="video-canvas" class="w-full h-full object-contain"></canvas>
+                    
+                    <!-- Overlay Watermark -->
+                    <div class="absolute bottom-4 right-4 bg-slate-950/70 backdrop-blur-md px-3 py-1 rounded text-[11px] font-mono text-slate-400 border border-slate-800">
+                        HD 1080p • 50 FRAMES
+                    </div>
+                </div>
+
+                <!-- Video Timeline Scrub Bar Controls -->
+                <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-3">
+                    <!-- Scrub Slider -->
+                    <div class="flex items-center space-x-3">
+                        <span class="text-xs font-mono text-slate-400 w-8" id="video-current-frame">#1</span>
+                        <input type="range" id="video-scrubber" min="0" max="49" step="0.01" value="0" oninput="onVideoScrub(this.value)" class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500 focus:outline-none">
+                        <span class="text-xs font-mono text-slate-400 w-8">#50</span>
+                    </div>
+
+                    <!-- Video Buttons & Speed -->
+                    <div class="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-slate-800/80">
+                        <div class="flex items-center space-x-3">
+                            <button id="video-play-btn" onclick="toggleVideoPlay()" class="bg-indigo-600 hover:bg-indigo-500 text-white p-2.5 rounded-lg transition-all shadow-md">
+                                <svg id="v-play-ic" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path></svg>
+                                <svg id="v-pause-ic" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            </button>
+
+                            <button onclick="stepVideoFrame(-1)" class="bg-slate-800 hover:bg-slate-700 text-slate-300 p-2.5 rounded-lg border border-slate-700" title="Previous Frame">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"></path></svg>
+                            </button>
+
+                            <button onclick="stepVideoFrame(1)" class="bg-slate-800 hover:bg-slate-700 text-slate-300 p-2.5 rounded-lg border border-slate-700" title="Next Frame">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"></path></svg>
+                            </button>
+                        </div>
+
+                        <!-- Transition Duration Per Frame -->
+                        <div class="flex items-center space-x-2 text-xs text-slate-300">
+                            <span>Video Pace:</span>
+                            <button onclick="setVideoPace(0.5)" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 rounded text-slate-300">0.5s</button>
+                            <button onclick="setVideoPace(1.0)" class="px-2 py-1 bg-indigo-600 rounded text-white font-semibold">1.0s</button>
+                            <button onclick="setVideoPace(2.0)" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 rounded text-slate-300">2.0s</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= VIEW 3: 50 PHOTO GRID GALLERY ================= -->
+        <section id="view-grid" class="hidden flex-1 flex flex-col space-y-4 overflow-hidden">
+            <!-- Filter & Search Toolbar -->
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-3 sm:p-4 flex flex-col sm:flex-row justify-between items-center gap-3">
+                <div class="flex items-center space-x-2 w-full sm:w-auto">
+                    <input type="text" id="grid-search" oninput="filterGrid()" placeholder="Search 50 photos..." class="w-full sm:w-64 bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5 text-xs sm:text-sm text-white focus:outline-none focus:border-indigo-500">
+                </div>
+                
+                <!-- Category Filter Pills -->
+                <div class="flex flex-wrap gap-1.5 w-full sm:w-auto justify-start sm:justify-end text-xs" id="category-pills">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+            <!-- Scrollable Grid Container -->
+            <div class="flex-1 overflow-y-auto pr-1">
+                <div id="grid-gallery" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                    <!-- 50 Photo Cards rendered dynamically -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= VIEW 4: IMPLEMENTATION & CODE GUIDE ================= -->
+        <section id="view-code" class="hidden flex-1 flex flex-col space-y-6 overflow-y-auto pr-2">
+            <!-- Best Practices Card -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-4">
+                <h2 class="text-xl font-bold text-white flex items-center space-x-2">
+                    <svg class="w-6 h-6 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <span>How to Put 50 Photos on a Webpage (2 Recommended Methods)</span>
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+                    <!-- Method 1: JavaScript Dynamic Slideshow -->
+                    <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-semibold uppercase tracking-wider text-indigo-400">Method A</span>
+                            <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">Interactive & Fast</span>
+                        </div>
+                        <h3 class="font-bold text-white text-base">JavaScript / HTML Lightbox Slideshow</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            Loads 50 image URLs on demand. Uses preloading to fetch the next 2-3 images in advance while maintaining lightweight page load speeds.
+                        </p>
+                        <ul class="text-xs text-slate-300 space-y-1 list-disc list-inside pt-1">
+                            <li>Users can pause, zoom, and jump to specific slides.</li>
+                            <li>Smallest initial page load weight.</li>
+                            <li>Supports captions and links per photo.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Method 2: HTML5 Video conversion -->
+                    <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-semibold uppercase tracking-wider text-purple-400">Method B</span>
+                            <span class="text-[10px] bg-purple-500/10 text-purple-400 border border-purple-500/20 px-2 py-0.5 rounded">Universal Video (.MP4)</span>
+                        </div>
+                        <h3 class="font-bold text-white text-base">Compile 50 Photos into MP4 Video</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            Combine all 50 photos into an MP4 slideshow video using tools like FFmpeg, Premiere, or Canva, then embed with an HTML5 `<video>` tag.
+                        </p>
+                        <ul class="text-xs text-slate-300 space-y-1 list-disc list-inside pt-1">
+                            <li>Guaranteed smooth crossfades and background audio track.</li>
+                            <li>Single file asset management.</li>
+                            <li>Uses native mobile video controls.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Copyable Code Snippet Container -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-lg font-bold text-white">Copy-Paste HTML & JS Slideshow Template</h3>
+                        <p class="text-xs text-slate-400">Embed a clean 50-photo auto-preloading slideshow on your own website.</p>
+                    </div>
+                    <button onclick="copySnippet()" id="copy-btn" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs px-3.5 py-2 rounded-lg font-medium transition-all flex items-center space-x-1.5 shadow-md">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                        <span id="copy-btn-label">Copy Code</span>
+                    </button>
+                </div>
+
+                <div class="relative bg-slate-950 border border-slate-800 rounded-xl p-4 overflow-x-auto">
+                    <pre id="code-block" class="text-xs font-mono text-indigo-200 leading-relaxed"><code>&lt;!-- Lightweight 50 Photo Web Slideshow Structure --&gt;
+&lt;div id="slideshow-box" style="position:relative; max-width:800px; margin:0 auto;"&gt;
+  &lt;img id="current-photo" src="photo1.jpg" style="width:100%; height:auto; border-radius:12px;" alt="Photo Slide" /&gt;
+  &lt;button onclick="changePhoto(-1)" style="position:absolute; left:10px; top:50%;"&gt;&amp;lt;&lt;/button&gt;
+  &lt;button onclick="changePhoto(1)" style="position:absolute; right:10px; top:50%;"&gt;&amp;gt;&lt;/button&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+  // Array of 50 photo URLs
+  const photos = Array.from({ length: 50 }, (_, i) => `https://picsum.photos/id/${i + 10}/800/600`);
+  let currentIndex = 0;
+  let timer = null;
+
+  function showPhoto(index) {
+    currentIndex = (index + photos.length) % photos.length;
+    document.getElementById('current-photo').src = photos[currentIndex];
+    preloadNext();
+  }
+
+  function changePhoto(step) {
+    showPhoto(currentIndex + step);
+  }
+
+  // Preload next image to eliminate visual delay
+  function preloadNext() {
+    const nextImg = new Image();
+    nextImg.src = photos[(currentIndex + 1) % photos.length];
+  }
+
+  // Start Autoplay (every 3 seconds)
+  function startAutoplay() {
+    timer = setInterval(() => changePhoto(1), 3000);
+  }
+
+  window.onload = startAutoplay;
+&lt;/script&gt;</code></pre>
+                </div>
+            </div>
+
+            <!-- FFmpeg Video Conversion Guide -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-3">
+                <h3 class="text-base font-bold text-white flex items-center gap-2">
+                    <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    Converting 50 Photos to an MP4 Video File via FFmpeg
+                </h3>
+                <p class="text-xs text-slate-400">If you prefer rendering a single video file from 50 images named <code>img001.jpg</code> to <code>img050.jpg</code>, run this terminal command:</p>
+                <div class="bg-slate-950 p-3 rounded-xl font-mono text-xs text-purple-300 border border-slate-800">
+                    ffmpeg -framerate 1/2 -i img%03d.jpg -c:v libx264 -r 30 -pix_fmt yuv420p output_slideshow.mp4
+                </div>
+                <p class="text-[11px] text-slate-500">* This sets each photo duration to 2 seconds (`-framerate 1/2`) and outputs an H.264 MP4 compatible with all browsers.</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Lightbox Modal for Grid Item Click -->
+    <div id="grid-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-xl z-50 hidden flex items-center justify-center p-4">
+        <div class="relative max-w-4xl w-full bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl flex flex-col">
+            <button onclick="closeGridModal()" class="absolute top-3 right-3 bg-slate-950/80 text-slate-300 hover:text-white p-2 rounded-full border border-slate-700 z-10">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <div class="relative aspect-video max-h-[70vh] bg-black flex items-center justify-center">
+                <img id="modal-img" src="" alt="Modal preview" class="max-w-full max-h-full object-contain">
+            </div>
+            <div class="p-4 bg-slate-900 flex justify-between items-center border-t border-slate-800">
+                <div>
+                    <h4 id="modal-title" class="font-bold text-white text-base">Photo Detail</h4>
+                    <p id="modal-desc" class="text-xs text-slate-400">Category info</p>
+                </div>
+                <button onclick="launchSlideshowAtCurrent()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs px-4 py-2 rounded-lg font-semibold transition-all">
+                    Open in Slideshow Mode
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Script Core -->
+    <script>
+        // Data Set: 50 High-Quality Curated Photos
+        const categories = ['Nature', 'Architecture', 'Travel', 'Abstract', 'Urban'];
+        
+        // Generating 50 curated items with fallback dynamic SVG generators if offline
+        const photosData = Array.from({ length: 50 }, (_, i) => {
+            const id = i + 1;
+            const category = categories[i % categories.length];
+            // Deterministic image IDs from Unsplash/Picsum
+            const imageId = (i * 7 + 12) % 90 + 10;
+            return {
+                id: id,
+                title: `${category} Experience #${id}`,
+                category: category,
+                description: `High-resolution photograph representing slide sequence frame #${id} out of 50. Optimized for responsive layout display.`,
+                url: `https://picsum.photos/id/${imageId}/1200/800`,
+                thumbUrl: `https://picsum.photos/id/${imageId}/300/200`
+            };
+        });
+
+        // App State
+        let currentSlideIndex = 0;
+        let isPlaying = false;
+        let autoplayInterval = null;
+        let slideDuration = 2500; // ms
+        let currentEffect = 'fade';
+        let audioContext = null;
+        let isSoundOn = false;
+
+        // Video Simulation State
+        let isVideoPlaying = false;
+        let videoAnimFrame = null;
+        let videoFrameValue = 0;
+        let videoPace = 1.0; // seconds per photo
+        let loadedVideoImages = [];
+
+        // Dynamic Elements Initialization
+        window.onload = function() {
+            initSlideshow();
+            initThumbnails();
+            initGrid();
+            initVideoCanvas();
+            preloadNeighbors(0);
+            setupTouchGestures();
+            setupKeyboardNav();
+        };
+
+        // Switch Main Tabs
+        function switchView(viewName) {
+            const views = ['slideshow', 'video', 'grid', 'code'];
+            views.forEach(v => {
+                const el = document.getElementById(`view-${v}`);
+                const tab = document.getElementById(`tab-${v}`);
+                if (v === viewName) {
+                    el.classList.remove('hidden');
+                    tab.classList.add('bg-indigo-600', 'text-white', 'shadow-md');
+                    tab.classList.remove('text-slate-400');
+                } else {
+                    el.classList.add('hidden');
+                    tab.classList.remove('bg-indigo-600', 'text-white', 'shadow-md');
+                    tab.classList.add('text-slate-400');
+                }
+            });
+
+            if (viewName !== 'slideshow' && isPlaying) {
+                stopPlay();
+            }
+            if (viewName !== 'video' && isVideoPlaying) {
+                toggleVideoPlay(false);
+            }
+            if (viewName === 'video') {
+                renderVideoFrame(videoFrameValue);
+            }
+        }
+
+        // --- SLIDESHOW CORE LOGIC ---
+
+        function initSlideshow() {
+            renderSlide(currentSlideIndex);
+        }
+
+        function renderSlide(index) {
+            const photo = photosData[index];
+            const imgEl = document.getElementById('main-slide-img');
+            const bgBlur = document.getElementById('bg-blur');
+            const kenburnsImg = document.getElementById('kenburns-img');
+            const counter = document.getElementById('slide-counter-badge');
+            const categoryBadge = document.getElementById('slide-category-badge');
+            const titleEl = document.getElementById('slide-title');
+            const descEl = document.getElementById('slide-desc');
+
+            // Apply transition effects
+            if (currentEffect === 'fade') {
+                imgEl.style.opacity = '0';
+                imgEl.style.transform = 'scale(0.98)';
+                setTimeout(() => {
+                    imgEl.src = photo.url;
+                    imgEl.style.opacity = '1';
+                    imgEl.style.transform = 'scale(1)';
+                }, 150);
+            } else if (currentEffect === 'zoom') {
+                imgEl.style.opacity = '0';
+                imgEl.style.transform = 'scale(1.08)';
+                setTimeout(() => {
+                    imgEl.src = photo.url;
+                    imgEl.style.opacity = '1';
+                    imgEl.style.transform = 'scale(1)';
+                }, 150);
+            } else {
+                imgEl.src = photo.url;
+            }
+
+            // Image Error Fallback Handler
+            imgEl.onerror = function() {
+                this.onerror = null;
+                this.src = createSvgPlaceholder(photo.id, photo.title);
+            };
+
+            bgBlur.style.backgroundImage = `url('${photo.thumbUrl}')`;
+            counter.innerText = `${index + 1} / ${photosData.length}`;
+            categoryBadge.innerText = photo.category;
+            titleEl.innerText = photo.title;
+            descEl.innerText = photo.description;
+
+            if (currentEffect === 'kenburns') {
+                document.getElementById('kenburns-wrapper').classList.remove('hidden');
+                kenburnsImg.src = photo.url;
+            } else {
+                document.getElementById('kenburns-wrapper').classList.add('hidden');
+            }
+
+            // Update Thumbnail Active Highlight
+            highlightThumbnail(index);
+
+            // Preload surrounding photos
+            preloadNeighbors(index);
+
+            // Audio Tone Cue
+            if (isSoundOn) {
+                playChime(300 + (index % 12) * 40);
+            }
+        }
+
+        function nextSlide() {
+            currentSlideIndex = (currentSlideIndex + 1) % photosData.length;
+            renderSlide(currentSlideIndex);
+            resetProgressBar();
+        }
+
+        function prevSlide() {
+            currentSlideIndex = (currentSlideIndex - 1 + photosData.length) % photosData.length;
+            renderSlide(currentSlideIndex);
+            resetProgressBar();
+        }
+
+        function togglePlay() {
+            if (isPlaying) {
+                stopPlay();
+            } else {
+                startPlay();
+            }
+        }
+
+        function startPlay() {
+            isPlaying = true;
+            document.getElementById('play-icon').classList.add('hidden');
+            document.getElementById('pause-icon').classList.remove('hidden');
+            document.getElementById('play-btn-text').innerText = 'Pause';
+
+            let startTime = Date.now();
+            const pBar = document.getElementById('slide-progress-bar');
+
+            autoplayInterval = setInterval(() => {
+                const elapsed = Date.now() - startTime;
+                const pct = Math.min(100, (elapsed / slideDuration) * 100);
+                pBar.style.width = pct + '%';
+
+                if (elapsed >= slideDuration) {
+                    nextSlide();
+                    startTime = Date.now();
+                }
+            }, 50);
+        }
+
+        function stopPlay() {
+            isPlaying = false;
+            clearInterval(autoplayInterval);
+            document.getElementById('play-icon').classList.remove('hidden');
+            document.getElementById('pause-icon').classList.add('hidden');
+            document.getElementById('play-btn-text').innerText = 'Autoplay';
+            resetProgressBar();
+        }
+
+        function resetProgressBar() {
+            const pBar = document.getElementById('slide-progress-bar');
+            pBar.style.width = '0%';
+        }
+
+        function updateSpeed(val) {
+            slideDuration = parseInt(val, 10);
+            if (isPlaying) {
+                stopPlay();
+                startPlay();
+            }
+        }
+
+        function updateEffect(val) {
+            currentEffect = val;
+            renderSlide(currentSlideIndex);
+        }
+
+        function jumpToSlide() {
+            const input = document.getElementById('jump-input');
+            const val = parseInt(input.value, 10);
+            if (val >= 1 && val <= 50) {
+                currentSlideIndex = val - 1;
+                renderSlide(currentSlideIndex);
+                input.value = '';
+            }
+        }
+
+        // --- THUMBNAIL STRIP LOGIC ---
+
+        function initThumbnails() {
+            const container = document.getElementById('thumbs-container');
+            container.innerHTML = '';
+
+            photosData.forEach((photo, idx) => {
+                const thumb = document.createElement('div');
+                thumb.id = `thumb-${idx}`;
+                thumb.className = `flex-shrink-0 w-20 h-14 rounded-lg overflow-hidden border-2 cursor-pointer transition-all ${idx === 0 ? 'border-indigo-500 scale-105 shadow-md' : 'border-transparent opacity-60 hover:opacity-100'}`;
+                thumb.onclick = () => {
+                    currentSlideIndex = idx;
+                    renderSlide(currentSlideIndex);
+                    resetProgressBar();
+                };
+
+                const img = document.createElement('img');
+                img.src = photo.thumbUrl;
+                img.alt = photo.title;
+                img.className = 'w-full h-full object-cover';
+                img.onerror = function() {
+                    this.onerror = null;
+                    this.src = createSvgPlaceholder(photo.id, `#${photo.id}`);
+                };
+
+                thumb.appendChild(img);
+                container.appendChild(thumb);
+            });
+        }
+
+        function highlightThumbnail(index) {
+            photosData.forEach((_, idx) => {
+                const el = document.getElementById(`thumb-${idx}`);
+                if (!el) return;
+                if (idx === index) {
+                    el.className = 'flex-shrink-0 w-20 h-14 rounded-lg overflow-hidden border-2 border-indigo-500 scale-105 shadow-md opacity-100 transition-all';
+                    el.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                } else {
+                    el.className = 'flex-shrink-0 w-20 h-14 rounded-lg overflow-hidden border-2 border-transparent opacity-60 hover:opacity-100 transition-all';
+                }
+            });
+        }
+
+        // Image Preloader to ensure zero white-flashes across 50 items
+        function preloadNeighbors(currentIndex) {
+            const indicesToPreload = [
+                (currentIndex + 1) % photosData.length,
+                (currentIndex + 2) % photosData.length,
+                (currentIndex - 1 + photosData.length) % photosData.length
+            ];
+
+            indicesToPreload.forEach(idx => {
+                const img = new Image();
+                img.src = photosData[idx].url;
+            });
+        }
+
+        // --- VIEW 2: CANVAS VIDEO SIMULATION PLAYER ---
+
+        function initVideoCanvas() {
+            const canvas = document.getElementById('video-canvas');
+            canvas.width = 1280;
+            canvas.height = 720;
+            renderVideoFrame(0);
+        }
+
+        function renderVideoFrame(frameVal) {
+            const canvas = document.getElementById('video-canvas');
+            const ctx = canvas.getContext('2d');
+            
+            const baseIndex = Math.floor(frameVal);
+            const nextIndex = Math.min(photosData.length - 1, baseIndex + 1);
+            const progress = frameVal - baseIndex; // 0.0 to 1.0 crossfade ratio
+
+            // Draw Background black
+            ctx.fillStyle = '#020617';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const img1 = getVideoImage(baseIndex);
+            const img2 = getVideoImage(nextIndex);
+
+            // Cross-fade rendering onto canvas
+            if (img1 && img1.complete) {
+                ctx.globalAlpha = 1 - progress;
+                drawScaledImage(ctx, img1, canvas.width, canvas.height);
+            }
+            if (img2 && img2.complete && progress > 0) {
+                ctx.globalAlpha = progress;
+                drawScaledImage(ctx, img2, canvas.width, canvas.height);
+            }
+            ctx.globalAlpha = 1.0;
+
+            // Update UI timer & scrubber
+            document.getElementById('video-scrubber').value = frameVal;
+            document.getElementById('video-current-frame').innerText = `#${baseIndex + 1}`;
+            
+            const totalSecs = Math.floor(frameVal * videoPace);
+            const mins = String(Math.floor(totalSecs / 60)).padStart(2, '0');
+            const secs = String(totalSecs % 60).padStart(2, '0');
+            const maxSecs = Math.floor(50 * videoPace);
+            const maxMins = String(Math.floor(maxSecs / 60)).padStart(2, '0');
+            const maxSecsStr = String(maxSecs % 60).padStart(2, '0');
+            
+            document.getElementById('video-timer').innerText = `${mins}:${secs} / ${maxMins}:${maxSecsStr}`;
+        }
+
+        function getVideoImage(index) {
+            if (!loadedVideoImages[index]) {
+                const img = new Image();
+                img.crossOrigin = 'Anonymous';
+                img.src = photosData[index].url;
+                img.onload = () => renderVideoFrame(videoFrameValue);
+                img.onerror = () => {
+                    img.src = createSvgPlaceholder(index + 1, photosData[index].title);
+                };
+                loadedVideoImages[index] = img;
+            }
+            return loadedVideoImages[index];
+        }
+
+        function drawScaledImage(ctx, img, cw, ch) {
+            const hRatio = cw / img.width;
+            const vRatio = ch / img.height;
+            const ratio = Math.min(hRatio, vRatio);
+            const centerShift_x = (cw - img.width * ratio) / 2;
+            const centerShift_y = (ch - img.height * ratio) / 2;
+            ctx.drawImage(img, 0, 0, img.width, img.height, centerShift_x, centerShift_y, img.width * ratio, img.height * ratio);
+        }
+
+        function onVideoScrub(val) {
+            videoFrameValue = parseFloat(val);
+            renderVideoFrame(videoFrameValue);
+        }
+
+        function toggleVideoPlay(forceState) {
+            isVideoPlaying = forceState !== undefined ? forceState : !isVideoPlaying;
+            const pBtn = document.getElementById('v-play-ic');
+            const pauseBtn = document.getElementById('v-pause-ic');
+
+            if (isVideoPlaying) {
+                pBtn.classList.add('hidden');
+                pauseBtn.classList.remove('hidden');
+                let lastTimestamp = performance.now();
+
+                function loop(now) {
+                    if (!isVideoPlaying) return;
+                    const delta = (now - lastTimestamp) / 1000;
+                    lastTimestamp = now;
+
+                    videoFrameValue += delta / videoPace;
+                    if (videoFrameValue >= 49.9) {
+                        videoFrameValue = 0;
+                    }
+                    renderVideoFrame(videoFrameValue);
+                    videoAnimFrame = requestAnimationFrame(loop);
+                }
+                videoAnimFrame = requestAnimationFrame(loop);
+            } else {
+                pBtn.classList.remove('hidden');
+                pauseBtn.classList.add('hidden');
+                if (videoAnimFrame) cancelAnimationFrame(videoAnimFrame);
+            }
+        }
+
+        function stepVideoFrame(dir) {
+            videoFrameValue = Math.max(0, Math.min(49, Math.floor(videoFrameValue) + dir));
+            renderVideoFrame(videoFrameValue);
+        }
+
+        function setVideoPace(pace) {
+            videoPace = pace;
+            renderVideoFrame(videoFrameValue);
+        }
+
+        // --- VIEW 3: 50 PHOTO GRID & LIGHTBOX ---
+
+        function initGrid() {
+            // Populate Category Pills
+            const pillsContainer = document.getElementById('category-pills');
+            pillsContainer.innerHTML = '';
+            
+            const allBtn = document.createElement('button');
+            allBtn.className = 'px-3 py-1 rounded-full bg-indigo-600 text-white font-medium shadow-sm';
+            allBtn.innerText = 'All (50)';
+            allBtn.onclick = () => filterByCategory('All', allBtn);
+            pillsContainer.appendChild(allBtn);
+
+            categories.forEach(cat => {
+                const btn = document.createElement('button');
+                btn.className = 'px-3 py-1 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium transition-all';
+                btn.innerText = cat;
+                btn.onclick = () => filterByCategory(cat, btn);
+                pillsContainer.appendChild(btn);
+            });
+
+            renderGridItems(photosData);
+        }
+
+        function renderGridItems(items) {
+            const grid = document.getElementById('grid-gallery');
+            grid.innerHTML = '';
+
+            items.forEach((item) => {
+                const card = document.createElement('div');
+                card.className = 'group relative bg-slate-900 border border-slate-800 rounded-xl overflow-hidden cursor-pointer hover:border-indigo-500/60 transition-all duration-300 hover:shadow-xl hover:-translate-y-1';
+                card.onclick = () => openGridModal(item);
+
+                card.innerHTML = `
+                    <div class="aspect-square w-full overflow-hidden bg-slate-950 relative">
+                        <img src="${item.thumbUrl}" loading="lazy" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" onerror="this.onerror=null;this.src=createSvgPlaceholder(${item.id}, '${item.title}');">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-0 group-hover:opacity-80 transition-opacity flex items-end p-3">
+                            <span class="text-xs font-semibold text-white">${item.title}</span>
+                        </div>
+                    </div>
+                    <div class="p-2.5 flex justify-between items-center bg-slate-900">
+                        <span class="text-[10px] font-semibold text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded border border-indigo-500/20">#${item.id}</span>
+                        <span class="text-[10px] text-slate-400">${item.category}</span>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function filterGrid() {
+            const query = document.getElementById('grid-search').value.toLowerCase();
+            const filtered = photosData.filter(p => 
+                p.title.toLowerCase().includes(query) || 
+                p.category.toLowerCase().includes(query) ||
+                p.id.toString() === query
+            );
+            renderGridItems(filtered);
+        }
+
+        function filterByCategory(cat, btnElement) {
+            const pills = document.getElementById('category-pills').children;
+            Array.from(pills).forEach(p => {
+                p.className = 'px-3 py-1 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium transition-all';
+            });
+            btnElement.className = 'px-3 py-1 rounded-full bg-indigo-600 text-white font-medium shadow-sm';
+
+            if (cat === 'All') {
+                renderGridItems(photosData);
+            } else {
+                const filtered = photosData.filter(p => p.category === cat);
+                renderGridItems(filtered);
+            }
+        }
+
+        // Grid Modal Lightbox
+        let selectedGridItem = null;
+        function openGridModal(item) {
+            selectedGridItem = item;
+            document.getElementById('modal-img').src = item.url;
+            document.getElementById('modal-title').innerText = item.title;
+            document.getElementById('modal-desc').innerText = `${item.category} • Photo index #${item.id} of 50`;
+            document.getElementById('grid-modal').classList.remove('hidden');
+        }
+
+        function closeGridModal() {
+            document.getElementById('grid-modal').classList.add('hidden');
+        }
+
+        function launchSlideshowAtCurrent() {
+            if (selectedGridItem) {
+                currentSlideIndex = selectedGridItem.id - 1;
+                closeGridModal();
+                switchView('slideshow');
+                renderSlide(currentSlideIndex);
+            }
+        }
+
+        // --- AUDIO / SOUND EFFECTS (Web Audio API) ---
+
+        function toggleAudio() {
+            isSoundOn = !isSoundOn;
+            const offIcon = document.getElementById('sound-off-icon');
+            const onIcon = document.getElementById('sound-on-icon');
+
+            if (isSoundOn) {
+                offIcon.classList.add('hidden');
+                onIcon.classList.remove('hidden');
+                if (!audioContext) {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                playChime(523.25); // C5
+            } else {
+                offIcon.classList.remove('hidden');
+                onIcon.classList.add('hidden');
+            }
+        }
+
+        function playChime(freq) {
+            if (!audioContext) return;
+            try {
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, audioContext.currentTime);
+                gain.gain.setValueAtTime(0.04, audioContext.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 0.3);
+                osc.connect(gain);
+                gain.connect(audioContext.destination);
+                osc.start();
+                osc.stop(audioContext.currentTime + 0.3);
+            } catch (e) {
+                console.log('Audio error', e);
+            }
+        }
+
+        // --- FULLSCREEN & KEYBOARD & TOUCH CONTROLS ---
+
+        function toggleFullscreen() {
+            const elem = document.getElementById('player-container');
+            if (!document.fullscreenElement) {
+                if (elem.requestFullscreen) elem.requestFullscreen();
+            } else {
+                if (document.exitFullscreen) document.exitFullscreen();
+            }
+        }
+
+        function setupKeyboardNav() {
+            document.addEventListener('keydown', (e) => {
+                const slideshowView = document.getElementById('view-slideshow');
+                if (!slideshowView.classList.contains('hidden')) {
+                    if (e.key === 'ArrowRight') nextSlide();
+                    if (e.key === 'ArrowLeft') prevSlide();
+                    if (e.key === ' ') {
+                        e.preventDefault();
+                        togglePlay();
+                    }
+                    if (e.key.toLowerCase() === 'f') toggleFullscreen();
+                }
+            });
+        }
+
+        function setupTouchGestures() {
+            const player = document.getElementById('player-container');
+            let startX = 0;
+
+            player.addEventListener('touchstart', (e) => {
+                startX = e.changedTouches[0].screenX;
+            }, { passive: true });
+
+            player.addEventListener('touchend', (e) => {
+                const endX = e.changedTouches[0].screenX;
+                if (startX - endX > 40) {
+                    nextSlide(); // Swipe left
+                } else if (endX - startX > 40) {
+                    prevSlide(); // Swipe right
+                }
+            }, { passive: true });
+        }
+
+        // Dynamic SVG Placeholder Generator for offline or broken image URLs
+        function createSvgPlaceholder(id, title) {
+            const colors = [
+                ['#3b82f6', '#1d4ed8'],
+                ['#8b5cf6', '#6d28d9'],
+                ['#ec4899', '#be185d'],
+                ['#10b981', '#047857'],
+                ['#f59e0b', '#b45309']
+            ];
+            const pair = colors[id % colors.length];
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800">
+                <defs>
+                    <linearGradient id="g${id}" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="${pair[0]}"/>
+                        <stop offset="100%" stop-color="${pair[1]}"/>
+                    </linearGradient>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#g${id})"/>
+                <circle cx="600" cy="360" r="120" fill="white" opacity="0.15"/>
+                <text x="600" y="380" font-family="sans-serif" font-size="72" font-weight="bold" fill="white" text-anchor="middle">#${id}</text>
+                <text x="600" y="460" font-family="sans-serif" font-size="32" fill="white" opacity="0.9" text-anchor="middle">${title}</text>
+            </svg>`;
+            return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+        }
+
+        // Copy Code Helper
+        function copySnippet() {
+            const codeText = document.getElementById('code-block').innerText;
+            const btnLabel = document.getElementById('copy-btn-label');
+            
+            const textarea = document.createElement('textarea');
+            textarea.value = codeText;
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                btnLabel.innerText = 'Copied!';
+                setTimeout(() => { btnLabel.innerText = 'Copy Code'; }, 2000);
+            } catch (err) {
+                console.error('Failed to copy', err);
+            }
+            document.body.removeChild(textarea);
+        }
+    </script>
+</body>
+</html>
