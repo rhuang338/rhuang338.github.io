@@ -1,5 +1,5 @@
 // Automatically generate array for photo1.jpg through photo50.jpg
-const totalPhotos = 50;
+const totalPhotos = 3;
 const photos = Array.from({ length: totalPhotos }, (_, i) => `images/photo${i + 1}.jpg`);
 
 let currentIndex = 0;
