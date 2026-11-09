@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Photo Slideshow</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="slideshow-container">
+    <img id="slideshow-img" src="images/133785613001399020.jpg" alt="Slideshow Image">
+    <img id="slideshow-img" src="images/133834423686707622.jpg" alt="Slideshow Image">
+    <img id="slideshow-img" src="images/133840944739219570.jpg" alt="Slideshow Image">
+    
+    <button class="nav-btn prev" onclick="changeSlide(-1)">&#10094;</button>
+    <button class="nav-btn next" onclick="changeSlide(1)">&#10095;</button>
+    
+    <div class="counter" id="slide-counter">1 / 50</div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
