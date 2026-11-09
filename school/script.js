@@ -28,4 +28,4 @@ document.addEventListener("keydown", (e) => {
   if (e.key === "ArrowRight") changeSlide(1);
 });
 
-setInterval(() => changeSlide(1), 3500);
+setInterval(() => changeSlide(1), 8000);
