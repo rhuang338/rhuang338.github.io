@@ -1,6 +1,8 @@
-// Automatically generate array for photo1.jpg through photo50.jpg
-const totalPhotos = 3;
-const photos = Array.from({ length: totalPhotos }, (_, i) => `images/photo${i + 1}.jpg`);
+const photos = [
+  "images/133785613001399020.jpg",
+  "images/133834423686707622.jpg",
+  "images/133840944739219570.jpg"
+];
 
 let currentIndex = 0;
 const imgElement = document.getElementById("slideshow-img");
@@ -8,7 +10,7 @@ const counterElement = document.getElementById("slide-counter");
 
 function updateSlide() {
   imgElement.style.opacity = 0;
-  
+
   setTimeout(() => {
     imgElement.src = photos[currentIndex];
     imgElement.style.opacity = 1;
@@ -21,18 +23,9 @@ function changeSlide(direction) {
   updateSlide();
 }
 
-// Keyboard arrow key support
 document.addEventListener("keydown", (e) => {
   if (e.key === "ArrowLeft") changeSlide(-1);
   if (e.key === "ArrowRight") changeSlide(1);
 });
 
-// Auto-play slideshow every 3.5 seconds
-let autoPlay = setInterval(() => changeSlide(1), 3500);
-
-// Pause autoplay when hovering over slideshow
-const container = document.querySelector(".slideshow-container");
-container.addEventListener("mouseenter", () => clearInterval(autoPlay));
-container.addEventListener("mouseleave", () => {
-  autoPlay = setInterval(() => changeSlide(1), 3500);
-});
+setInterval(() => changeSlide(1), 3500);
